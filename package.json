@@ -1,5 +1,5 @@
 {
-  "name": "useform",
+  "name": "@uselife/useform",
   "version": "0.1.0",
   "description": "a React Hooks to maintain form state",
   "main": "dist/useForm.min.js",
@@ -7,6 +7,9 @@
     "build": "rollup -c -o dist/useForm.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "react",
     "React",
