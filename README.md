@@ -3,7 +3,7 @@ React Hook for Form, more simple more power 😌
 
 ## Installation
 
-```javascript
+```bash
 npm install @uselife/useform
 ```
 
