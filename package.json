@@ -5,7 +5,8 @@
   "main": "dist/useForm.min.js",
   "scripts": {
     "build": "rollup -c -o dist/useForm.min.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "styleguide": "styleguidist server",
+    "styleguide:build": "styleguidist build"
   },
   "files": [
     "dist"
@@ -23,9 +24,13 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
     "react": "^16.8.6",
+    "react-dom": "^16.9.0",
+    "react-styleguidist": "^9.1.14",
     "rollup": "^1.19.4",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-uglify": "^6.0.2"
+    "rollup-plugin-uglify": "^6.0.2",
+    "webpack": "^4.39.2"
   }
 }
