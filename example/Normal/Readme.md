@@ -1,4 +1,4 @@
-Basic button:
+Basic form:
 
 ```jsx { "file": "../index.js" }
 ```
