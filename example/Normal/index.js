@@ -1,10 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import useForm from '@uselife/useform'
 
-export default function Mario({ children }) {
+export default function Normal({ children }) {
   const [formState, bindField] = useForm({
-    username: '123'
+    username: '1234'
   })
   return (
     <div>

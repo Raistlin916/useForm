@@ -1,3 +1,6 @@
+const path = require('path')
+const fs = require('fs')
+
 module.exports = {
   title: 'React useForm',
   pagePerSection: true,
@@ -43,5 +46,19 @@ module.exports = {
     fontFamily: {
       base: '"Source Sans Pro", sans-serif'
     }
+  },
+  updateExample(props, exampleFilePath) {
+    const { settings, lang } = props
+    if (typeof settings.file === 'string') {
+      const filepath = path.resolve(exampleFilePath, settings.file)
+      settings.static = true
+      delete settings.file
+      return {
+        content: fs.readFileSync(filepath, 'utf8'),
+        settings,
+        lang
+      }
+    }
+    return props
   }
 }
