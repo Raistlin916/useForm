@@ -1,0 +1,5 @@
+Basic button:
+
+```jsx
+<Mario />
+```

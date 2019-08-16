@@ -1,4 +1,6 @@
 module.exports = {
+  title: 'React useForm',
+  pagePerSection: true,
   sections: [
     {
       name: 'Introduction',
@@ -24,11 +26,22 @@ module.exports = {
       ]
     },
     {
-      name: 'UI Components',
-      content: 'docs/ui.md',
-      components: 'example/components/*.js',
-      exampleMode: 'expand', // 'hide' | 'collapse' | 'expand'
-      usageMode: 'expand' // 'hide' | 'collapse' | 'expand'
+      name: 'Example',
+      components: 'example/**/*.js',
+      exampleMode: 'expand',
+      usageMode: 'expand'
     }
-  ]
+  ],
+  theme: {
+    color: {
+      link: '#4B4E6A',
+      linkHover: '#2B3847',
+      baseBackground: '#fff',
+      border: '#D0DAE4',
+      sidebarBackground: '#fff'
+    },
+    fontFamily: {
+      base: '"Source Sans Pro", sans-serif'
+    }
+  }
 }

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rollup -c -o dist/useForm.min.js",
     "styleguide": "styleguidist server",
-    "styleguide:build": "styleguidist build"
+    "styleguide:build": "styleguidist build",
+    "deploy-gh": "styleguidist build && gh-pages -d styleguide"
   },
   "files": [
     "dist"
@@ -22,9 +23,11 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
+    "gh-pages": "^2.1.1",
     "react": "^16.8.6",
     "react-dom": "^16.9.0",
     "react-styleguidist": "^9.1.14",

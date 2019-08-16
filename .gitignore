@@ -20,3 +20,5 @@ test/**/out
 
 # Editors
 **/.idea
+
+styleguide

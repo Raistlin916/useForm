@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   module: {
     rules: [
@@ -12,5 +14,10 @@ module.exports = {
       //   use: ['style-loader', 'css-loader']
       // }
     ]
+  },
+  resolve: {
+    alias: {
+      '@uselife': path.resolve(__dirname, 'src/')
+    }
   }
 }
