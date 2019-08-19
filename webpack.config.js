@@ -1,5 +1,9 @@
 const path = require('path')
 
+console.log(111, {
+  '@uselife': path.resolve(__dirname, 'src/')
+})
+
 module.exports = {
   module: {
     rules: [
