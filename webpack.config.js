@@ -1,9 +1,5 @@
 const path = require('path')
 
-console.log(111, {
-  '@uselife': path.resolve(__dirname, 'src/')
-})
-
 module.exports = {
   module: {
     rules: [
@@ -21,7 +17,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@uselife': path.resolve(__dirname, 'src/')
+      '@uselife/useform': path.resolve(__dirname, 'src/useForm')
     }
   }
 }
