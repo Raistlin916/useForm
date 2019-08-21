@@ -4,5 +4,5 @@ Basic form:
 ```
 
 ```jsx
-<Normal />
+<Basic />
 ```

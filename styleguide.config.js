@@ -30,9 +30,10 @@ module.exports = {
     },
     {
       name: 'Example',
-      components: 'example/**/*.js',
+      components: 'example/**/index.js',
       exampleMode: 'expand',
-      usageMode: 'expand'
+      usageMode: 'expand',
+      sectionDepth: 1
     }
   ],
   theme: {

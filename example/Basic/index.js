@@ -1,7 +1,7 @@
 import React from 'react'
 import useForm from '@uselife/useform'
 
-export default function Normal({ children }) {
+export default function Basic({ children }) {
   const [formState, bindField] = useForm({
     username: '1234'
   })
