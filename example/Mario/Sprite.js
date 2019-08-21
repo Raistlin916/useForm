@@ -1,26 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useReducer } from 'react'
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'right':
+      return { ...state, x: state.x + 1 }
+    case 'left':
+      return { ...state, x: state.x - 1 }
+    default:
+      throw new Error()
+  }
+}
 
 export default () => {
-  const [position, setPosition] = useState({
-    x: 0,
-    y: 0
-  })
+  const [position, dispatch] = useReducer(reducer, { x: 0, y: 0 })
   const handleInput = e => {
-    const effect = { ...position }
     if (e.key === 'a') {
-      effect.x -= 1
+      dispatch({ type: 'left' })
     }
     if (e.key === 'd') {
-      effect.x += 1
+      dispatch({ type: 'right' })
     }
-    setPosition(effect)
   }
   useEffect(() => {
     document.body.addEventListener('keypress', handleInput)
     return () => {
       document.body.removeEventListener('keypress', handleInput)
     }
-  }, [position])
+  }, [])
   const style = {
     position: 'relative',
     left: position.x,
