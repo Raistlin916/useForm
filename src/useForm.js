@@ -22,7 +22,7 @@ export const useField = (fieldValue, onChange, options = {}) => {
         if (onChange) {
           let targetValue = _.set(_.clone(fieldValue), name, value)
           if (handleOnChanged) {
-            targetValue = handleOnChanged(targetValue)
+            targetValue = handleOnChanged(targetValue, name, value)
           }
           onChange(targetValue)
         }
