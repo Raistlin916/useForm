@@ -1,16 +1,16 @@
-import {ReactElement} from "react"
+import {ReactElement, SetStateAction, Dispatch} from "react"
 
-type FieldElem<T> = ReactElement<{
-  value?: T
+type FieldElem = ReactElement<{
+  value?: any
   onChange: (e: Event) => any
 }>
 type BindField = <E extends FieldElem>(elem: E, bindOpt?: {
   name: string
   valueName?: string
 }) => E
-type UseFormOpt<S, N extends keyof S> = {
-  handleElement?: (elem, fieldValue: S, name: N) => any
-  handleOnChanged?: (targetValue: S, name: N, value: S[N]) => S
+type UseFormOpt<S> = {
+  handleElement?: (elem: FieldElem, fieldValue: S, name: string) => any
+  handleOnChanged?: (targetValue: S, name: string, value: any) => S
 }
 
 export const useField: <S>(fieldValue: S, onChange: Dispatch<S>, options?: UseFormOpt<S>) =>

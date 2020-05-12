@@ -1,6 +1,6 @@
 {
   "name": "@uselife/useform",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "a React Hooks to maintain form state",
   "main": "dist/useForm.min.js",
   "scripts": {
@@ -10,7 +10,8 @@
     "deploy-gh": "styleguidist build && gh-pages -d styleguide"
   },
   "files": [
-    "dist", "lib"
+    "dist",
+    "lib"
   ],
   "keywords": [
     "react",
