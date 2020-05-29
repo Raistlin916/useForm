@@ -14,7 +14,10 @@ type FieldElem = ReactElement<{
   value?: any
   onChange: (e: ChangeEvent<HTMLInputElement>) => any
 }>
-type BindField = <E extends FieldElem>(elem: E, bindOpt?: {}) => E
+type BindField = <E extends FieldElem>(
+  elem: E,
+  bindOpt?: { name?: NameType }
+) => E
 type UseFormOpt<S> = {
   handleElement?: (elem: FieldElem, fieldValue: S, name: NameType) => any
   handleOnChanged?: (targetValue: S, name: NameType, value: any) => S
@@ -50,7 +53,7 @@ function getValueFromEvent(e: ChangeEvent<HTMLInputElement>) {
 export const useField: UseField = (fieldValue, onChange, options = {}) => {
   const { handleElement, handleOnChanged } = options
   return (elem, bindOpt = {}) => {
-    const { name } = elem.props
+    const name = bindOpt.name || elem.props.name
     const isMultipleNames = Array.isArray(name)
     const names = (isMultipleNames ? name : [name]) as string[]
     const value = names.map((n) => _.get(fieldValue, n))

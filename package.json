@@ -1,6 +1,6 @@
 {
   "name": "@uselife/useform",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "a React Hooks to maintain form state",
   "main": "dist/useForm.min.js",
   "types": "dist/useForm.d.ts",
@@ -11,7 +11,10 @@
     "deploy-gh": "styleguidist build && gh-pages -d styleguide",
     "test": "jest"
   },
-  "prepublish": ["test", "build"],
+  "prepublish": [
+    "test",
+    "build"
+  ],
   "files": [
     "dist"
   ],

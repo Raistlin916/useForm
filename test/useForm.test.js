@@ -45,6 +45,7 @@ const Range = ({ value, onChange }) => {
 const TestApp = () => {
   const [formState, bindField] = useForm({
     username: 'Jay',
+    password: 123456,
     start: '0',
     end: '1',
   })
@@ -55,10 +56,14 @@ const TestApp = () => {
         {bindField(
           <input data-testid="username-input" type="text" name="username" />
         )}
+        {bindField(<input type="text" />, {
+          name: 'password',
+        })}
 
         {bindField(<Range name={['start', 'end']} />)}
       </form>
       <div data-testid="display">{formState.username}</div>
+      <div data-testid="display-password">{formState.password}</div>
     </>
   )
 }
@@ -71,6 +76,7 @@ describe('useForm hooks', () => {
     expect(getByTestId('login-form')).toHaveFormValues({
       username: 'Jay',
     })
+    expect(getByTestId('display-password')).toHaveTextContent(123456)
   })
 
   it('change input value sync state correct', () => {
