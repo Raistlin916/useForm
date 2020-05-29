@@ -1,9 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import useForm from '../src/useForm'
 
+const consoleError = console.error
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation((...args) => {
+    if (
+      !args[0].includes(
+        'Warning: An update to %s inside a test was not wrapped in act'
+      )
+    ) {
+      consoleError(...args)
+    }
+  })
+})
+
 const Range = ({ value, onChange }) => {
+  useEffect(() => {
+    const tid = setTimeout(() => {
+      onChange([3, 4])
+    }, 100)
+
+    return () => clearTimeout(tid)
+  }, [])
   return (
     <>
       <input
@@ -43,6 +63,8 @@ const TestApp = () => {
   )
 }
 
+jest.useFakeTimers()
+
 describe('useForm hooks', () => {
   it('form value fullfil correct', () => {
     const { getByTestId } = render(<TestApp />)
@@ -67,6 +89,11 @@ describe('useForm hooks', () => {
     expect(getByTestId('login-form')).toHaveFormValues({
       start: '0',
       end: '1',
+    })
+    jest.runAllTimers()
+    expect(getByTestId('login-form')).toHaveFormValues({
+      start: '3',
+      end: '4',
     })
   })
 })

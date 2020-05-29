@@ -7,15 +7,17 @@ import React, {
 } from 'react'
 import _ from 'lodash'
 
+type NameType = string | string[]
+
 type FieldElem = ReactElement<{
-  name: string
+  name: NameType
   value?: any
   onChange: (e: ChangeEvent<HTMLInputElement>) => any
 }>
 type BindField = <E extends FieldElem>(elem: E, bindOpt?: {}) => E
 type UseFormOpt<S> = {
-  handleElement?: (elem: FieldElem, fieldValue: S, name: string) => any
-  handleOnChanged?: (targetValue: S, name: string, value: any) => S
+  handleElement?: (elem: FieldElem, fieldValue: S, name: NameType) => any
+  handleOnChanged?: (targetValue: S, name: NameType, value: any) => S
 }
 
 export type UseField = <S extends object>(
@@ -49,17 +51,29 @@ export const useField: UseField = (fieldValue, onChange, options = {}) => {
   const { handleElement, handleOnChanged } = options
   return (elem, bindOpt = {}) => {
     const { name } = elem.props
-    const value = Array.isArray(name)
-      ? name.map((n) => _.get(fieldValue, n))
-      : _.get(fieldValue, name)
+    const isMultipleNames = Array.isArray(name)
+    const names = (isMultipleNames ? name : [name]) as string[]
+    const value = names.map((n) => _.get(fieldValue, n))
     const props = {
-      value,
+      value: isMultipleNames ? value : value[0],
       onChange: (e: ChangeEvent<HTMLInputElement>) => {
         const changedValue = getValueFromEvent(e)
         if (onChange) {
-          let targetValue = _.set(_.clone(fieldValue), name, changedValue)
+          let targetValue = names.reduce((pre, cur, index) => {
+            return {
+              ...pre,
+              [cur]: Array.isArray(changedValue)
+                ? changedValue[index]
+                : changedValue,
+            }
+          }, fieldValue)
+
           if (handleOnChanged) {
-            targetValue = handleOnChanged(targetValue, name, changedValue)
+            targetValue = handleOnChanged(
+              targetValue,
+              isMultipleNames ? names : name,
+              changedValue
+            )
           }
           onChange(targetValue)
         }
