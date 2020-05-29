@@ -1,6 +1,5 @@
 import babel from 'rollup-plugin-babel'
 import { terser } from 'rollup-plugin-terser'
-import typescript from '@rollup/plugin-typescript'
 import pkg from './package.json'
 
 export default {
@@ -17,9 +16,9 @@ export default {
     exports: 'named',
   },
   plugins: [
-    typescript(),
     babel({
       exclude: 'node_modules/**',
+      extensions: ['.ts']
     }),
     terser(),
   ],

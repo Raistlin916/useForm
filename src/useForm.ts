@@ -49,15 +49,17 @@ export const useField: UseField = (fieldValue, onChange, options = {}) => {
   const { handleElement, handleOnChanged } = options
   return (elem, bindOpt = {}) => {
     const { name } = elem.props
-    const value = _.get(fieldValue, name)
+    const value = Array.isArray(name)
+      ? name.map((n) => _.get(fieldValue, n))
+      : _.get(fieldValue, name)
     const props = {
       value,
       onChange: (e: ChangeEvent<HTMLInputElement>) => {
-        const value = getValueFromEvent(e)
+        const changedValue = getValueFromEvent(e)
         if (onChange) {
-          let targetValue = _.set(_.clone(fieldValue), name, value)
+          let targetValue = _.set(_.clone(fieldValue), name, changedValue)
           if (handleOnChanged) {
-            targetValue = handleOnChanged(targetValue, name, value)
+            targetValue = handleOnChanged(targetValue, name, changedValue)
           }
           onChange(targetValue)
         }
