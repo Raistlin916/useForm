@@ -1,22 +1,26 @@
 import babel from 'rollup-plugin-babel'
-import { uglify } from 'rollup-plugin-uglify'
+import { terser } from 'rollup-plugin-terser'
+import typescript from '@rollup/plugin-typescript'
+import pkg from './package.json'
 
 export default {
-  input: 'src/useForm.js',
+  input: 'src/useForm.ts',
   external: ['react', 'lodash'],
   output: {
-    format: 'umd',
+    file: pkg.main,
+    format: 'es',
     name: 'useForm',
     globals: {
       react: 'React',
-      lodash: '_'
+      lodash: '_',
     },
-    exports: 'named'
+    exports: 'named',
   },
   plugins: [
+    typescript(),
     babel({
-      exclude: 'node_modules/**'
+      exclude: 'node_modules/**',
     }),
-    uglify()
-  ]
+    terser(),
+  ],
 }

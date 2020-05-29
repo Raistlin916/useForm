@@ -1,17 +1,18 @@
 {
   "name": "@uselife/useform",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "a React Hooks to maintain form state",
   "main": "dist/useForm.min.js",
+  "types": "dist/useForm.d.ts",
   "scripts": {
-    "build": "rollup -c -o dist/useForm.min.js",
+    "build": "tsc --outDir dist --declaration true && rollup -c",
     "styleguide": "styleguidist server",
     "styleguide:build": "styleguidist build",
     "deploy-gh": "styleguidist build && gh-pages -d styleguide"
   },
+  "prepublish": "build",
   "files": [
-    "dist",
-    "lib"
+    "dist"
   ],
   "keywords": [
     "react",
@@ -22,20 +23,23 @@
   ],
   "author": "",
   "license": "ISC",
-  "types": "./lib/index.d.ts",
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.6",
-    "gh-pages": "^2.1.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.9.0",
-    "react-styleguidist": "^9.1.14",
-    "rollup": "^1.19.4",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-uglify": "^6.0.2",
-    "webpack": "^4.39.2"
+    "@babel/core": "^7.10.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/preset-env": "^7.10.1",
+    "@babel/preset-react": "^7.10.1",
+    "@rollup/plugin-typescript": "^4.1.2",
+    "@types/lodash": "^4.14.153",
+    "@types/react": "^16.9.35",
+    "babel-loader": "^8.1.0",
+    "gh-pages": "^2.2.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-styleguidist": "^11.0.8",
+    "rollup": "^2.11.2",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^6.1.0",
+    "typescript": "^3.9.3",
+    "webpack": "^4.43.0"
   }
 }

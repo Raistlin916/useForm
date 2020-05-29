@@ -1,7 +1,42 @@
-import React, { useState } from 'react'
+import React, {
+  useState,
+  ReactElement,
+  SetStateAction,
+  Dispatch,
+  ChangeEvent,
+} from 'react'
 import _ from 'lodash'
 
-function getValueFromEvent(e) {
+type FieldElem = ReactElement<{
+  name: string
+  value?: any
+  onChange: (e: ChangeEvent<HTMLInputElement>) => any
+}>
+type BindField = <E extends FieldElem>(elem: E, bindOpt?: {}) => E
+type UseFormOpt<S> = {
+  handleElement?: (elem: FieldElem, fieldValue: S, name: string) => any
+  handleOnChanged?: (targetValue: S, name: string, value: any) => S
+}
+
+export type UseField = <S extends object>(
+  fieldValue: S,
+  onChange: Dispatch<S>,
+  options?: UseFormOpt<S>
+) => BindField
+
+export type UseForm = <S extends object>(
+  initialState: S,
+  useFormOpt?: UseFormOpt<S>
+) => [
+  S,
+  BindField,
+  {
+    setFormState: Dispatch<SetStateAction<S>>
+    reset: () => void
+  }
+]
+
+function getValueFromEvent(e: ChangeEvent<HTMLInputElement>) {
   if (e && e.target) {
     return (e.target.type || '').toLowerCase() === 'checkbox'
       ? e.target.checked
@@ -10,14 +45,14 @@ function getValueFromEvent(e) {
   return e
 }
 
-export const useField = (fieldValue, onChange, options = {}) => {
+export const useField: UseField = (fieldValue, onChange, options = {}) => {
   const { handleElement, handleOnChanged } = options
   return (elem, bindOpt = {}) => {
     const { name } = elem.props
     const value = _.get(fieldValue, name)
     const props = {
       value,
-      onChange: e => {
+      onChange: (e: ChangeEvent<HTMLInputElement>) => {
         const value = getValueFromEvent(e)
         if (onChange) {
           let targetValue = _.set(_.clone(fieldValue), name, value)
@@ -26,10 +61,7 @@ export const useField = (fieldValue, onChange, options = {}) => {
           }
           onChange(targetValue)
         }
-      }
-    }
-    if (bindOpt.valueName) {
-      props[bindOpt.valueName] = value
+      },
     }
     const processedElement = React.cloneElement(elem, props)
     if (handleElement) {
@@ -39,7 +71,7 @@ export const useField = (fieldValue, onChange, options = {}) => {
   }
 }
 
-const useForm = (initialState, useFormOpt = {}) => {
+const useForm: UseForm = (initialState, useFormOpt = {}) => {
   const [formState, setFormState] = useState(initialState)
   const bindField = useField(formState, setFormState, useFormOpt)
   return [
@@ -49,8 +81,8 @@ const useForm = (initialState, useFormOpt = {}) => {
       setFormState,
       reset: () => {
         setFormState(initialState)
-      }
-    }
+      },
+    },
   ]
 }
 
