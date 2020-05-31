@@ -1,9 +1,10 @@
 import React, {
-  useState,
   ReactElement,
   SetStateAction,
   Dispatch,
   ChangeEvent,
+  useReducer,
+  Reducer,
 } from 'react'
 import _ from 'lodash'
 
@@ -19,13 +20,17 @@ type BindField = <E extends FieldElem>(
   bindOpt?: { name?: NameType }
 ) => E
 type UseFormOpt<S> = {
-  handleElement?: (elem: FieldElem, fieldValue: S, name: NameType) => any
-  handleOnChanged?: (targetValue: S, name: NameType, value: any) => S
+  handleElement?: (
+    elem: FieldElem,
+    fieldValue: Partial<S>,
+    name: NameType
+  ) => any
+  handleOnChanged?: (targetValue: Partial<S>, name: NameType, value: any) => S
 }
 
 export type UseField = <S extends object>(
   fieldValue: S,
-  onChange: Dispatch<S>,
+  onChange: Dispatch<Partial<S>>,
   options?: UseFormOpt<S>
 ) => BindField
 
@@ -36,7 +41,7 @@ export type UseForm = <S extends object>(
   S,
   BindField,
   {
-    setFormState: Dispatch<SetStateAction<S>>
+    setFormState: (data: Partial<S>) => void
     reset: () => void
   }
 ]
@@ -63,13 +68,21 @@ export const useField: UseField = (fieldValue, onChange, options = {}) => {
         const changedValue = getValueFromEvent(e)
         if (onChange) {
           let targetValue = names.reduce((pre, cur, index) => {
+            let currentValue = changedValue
+            if (isMultipleNames) {
+              if (Array.isArray(changedValue)) {
+                currentValue = changedValue[index]
+              } else {
+                throw new Error(
+                  'multiple names onChange should return array values'
+                )
+              }
+            }
             return {
               ...pre,
-              [cur]: Array.isArray(changedValue)
-                ? changedValue[index]
-                : changedValue,
+              [cur]: currentValue,
             }
-          }, fieldValue)
+          }, {})
 
           if (handleOnChanged) {
             targetValue = handleOnChanged(
@@ -90,17 +103,49 @@ export const useField: UseField = (fieldValue, onChange, options = {}) => {
   }
 }
 
-const useForm: UseForm = (initialState, useFormOpt = {}) => {
-  const [formState, setFormState] = useState(initialState)
-  const bindField = useField(formState, setFormState, useFormOpt)
+type Action<T> =
+  | { type: 'set'; payload: Partial<T> }
+  | { type: 'reset'; payload: T }
+
+const reducer = <T>(state: T, action: Action<T>) => {
+  switch (action.type) {
+    case 'set':
+      return {
+        ...state,
+        ...action.payload,
+      }
+    case 'reset':
+      return {
+        ...action.payload,
+      }
+    default:
+      throw new Error('unknown action type')
+  }
+}
+
+const useForm: UseForm = <T extends {}>(initialState: T, useFormOpt = {}) => {
+  const [formState, dispatch] = useReducer<Reducer<T, Action<T>>>(
+    reducer,
+    initialState
+  )
+  const setFormState = (data: Partial<T>) =>
+    dispatch({
+      type: 'set',
+      payload: data,
+    })
+  const reset = () =>
+    dispatch({
+      type: 'reset',
+      payload: initialState,
+    })
+
+  const bindField = useField<T>(formState, setFormState, useFormOpt)
   return [
     formState,
     bindField,
     {
       setFormState,
-      reset: () => {
-        setFormState(initialState)
-      },
+      reset,
     },
   ]
 }

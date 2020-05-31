@@ -1,25 +1,12 @@
 import React, { useEffect } from 'react'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, act } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import useForm from '../src/useForm'
-
-const consoleError = console.error
-beforeAll(() => {
-  jest.spyOn(console, 'error').mockImplementation((...args) => {
-    if (
-      !args[0].includes(
-        'Warning: An update to %s inside a test was not wrapped in act'
-      )
-    ) {
-      consoleError(...args)
-    }
-  })
-})
 
 const Range = ({ value, onChange }) => {
   useEffect(() => {
     const tid = setTimeout(() => {
-      onChange([3, 4])
+      onChange(['3', '4'])
     }, 100)
 
     return () => clearTimeout(tid)
@@ -42,20 +29,32 @@ const Range = ({ value, onChange }) => {
   )
 }
 
+const NumberInput = ({ value, onChange }) => {
+  useEffect(() => {
+    const tid = setTimeout(() => {
+      onChange([4, 5, 6])
+    }, 150)
+
+    return () => clearTimeout(tid)
+  }, [])
+  return <input value={value} onChange={onChange} />
+}
+
 const TestApp = () => {
-  const [formState, bindField] = useForm({
+  const [formState, bindField, { setFormState }] = useForm({
     username: 'Jay',
+    numbers: [1, 2, 3],
     password: 123456,
     start: '0',
     end: '1',
   })
-
   return (
     <>
       <form data-testid="login-form">
         {bindField(
           <input data-testid="username-input" type="text" name="username" />
         )}
+        {bindField(<NumberInput name="numbers" />)}
         {bindField(<input type="text" />, {
           name: 'password',
         })}
@@ -63,12 +62,20 @@ const TestApp = () => {
         {bindField(<Range name={['start', 'end']} />)}
       </form>
       <div data-testid="display">{formState.username}</div>
+      <div data-testid="display-numbers">
+        {JSON.stringify(formState.numbers)}
+      </div>
       <div data-testid="display-password">{formState.password}</div>
     </>
   )
 }
 
-jest.useFakeTimers()
+beforeAll(() => {
+  jest.useFakeTimers()
+})
+afterAll(() => {
+  jest.useRealTimers()
+})
 
 describe('useForm hooks', () => {
   it('form value fullfil correct', () => {
@@ -76,6 +83,7 @@ describe('useForm hooks', () => {
     expect(getByTestId('login-form')).toHaveFormValues({
       username: 'Jay',
     })
+    expect(getByTestId('display-numbers')).toHaveTextContent('[1,2,3]')
     expect(getByTestId('display-password')).toHaveTextContent(123456)
   })
 
@@ -96,10 +104,12 @@ describe('useForm hooks', () => {
       start: '0',
       end: '1',
     })
-    jest.runAllTimers()
+    act(() => jest.runAllTimers())
+
     expect(getByTestId('login-form')).toHaveFormValues({
       start: '3',
       end: '4',
     })
+    expect(getByTestId('display-numbers')).toHaveTextContent('[4,5,6]')
   })
 })
