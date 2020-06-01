@@ -4,6 +4,7 @@ import React, {
   ChangeEvent,
   useReducer,
   Reducer,
+  useEffect,
 } from 'react'
 import _ from 'lodash'
 
@@ -132,13 +133,21 @@ const useForm: UseForm = <T extends {}>(initialState: T, useFormOpt = {}) => {
       type: 'set',
       payload: data,
     })
-  const reset = () =>
+  const reset = (data: T = initialState) =>
     dispatch({
       type: 'reset',
-      payload: initialState,
+      payload: data,
     })
 
   const bindField = useField<T>(formState, setFormState, useFormOpt)
+
+  const initialStateSign = JSON.stringify(initialState)
+  useEffect(() => {
+    if (JSON.stringify(formState) !== initialStateSign) {
+      reset()
+    }
+  }, [initialStateSign])
+
   return [
     formState,
     bindField,

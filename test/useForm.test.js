@@ -14,13 +14,11 @@ const Range = ({ value, onChange }) => {
   return (
     <>
       <input
-        data-testid="range1-input"
         name="start"
         value={value[0]}
         onChange={(e) => onChange([e.target.value, value[1]])}
       />
       <input
-        data-testid="range0-input"
         name="end"
         value={value[1]}
         onChange={(e) => onChange([value[0], e.target.value])}
@@ -41,7 +39,7 @@ const NumberInput = ({ value, onChange }) => {
 }
 
 const TestApp = () => {
-  const [formState, bindField, { setFormState }] = useForm({
+  const [formState, bindField] = useForm({
     username: 'Jay',
     numbers: [1, 2, 3],
     password: 123456,
@@ -52,7 +50,7 @@ const TestApp = () => {
     <>
       <form data-testid="login-form">
         {bindField(
-          <input data-testid="username-input" type="text" name="username" />
+          <input data-testid="input-username" type="text" name="username" />
         )}
         {bindField(<NumberInput name="numbers" />)}
         {bindField(<input type="text" />, {
@@ -66,6 +64,16 @@ const TestApp = () => {
         {JSON.stringify(formState.numbers)}
       </div>
       <div data-testid="display-password">{formState.password}</div>
+    </>
+  )
+}
+
+const TestSyncApp = ({ number }) => {
+  const [formState, bindField] = useForm({ number })
+  return (
+    <>
+      {bindField(<input data-testid="input-number" name="number" />)}
+      <div data-testid="display-number">{JSON.stringify(formState.number)}</div>
     </>
   )
 }
@@ -89,7 +97,7 @@ describe('useForm hooks', () => {
 
   it('change input value sync state correct', () => {
     const { getByTestId } = render(<TestApp />)
-    fireEvent.change(getByTestId('username-input'), {
+    fireEvent.change(getByTestId('input-username'), {
       target: { value: 'Eason' },
     })
     expect(getByTestId('display')).toHaveTextContent('Eason')
@@ -111,5 +119,15 @@ describe('useForm hooks', () => {
       end: '4',
     })
     expect(getByTestId('display-numbers')).toHaveTextContent('[4,5,6]')
+  })
+
+  it('sync useForm propsData and formState', () => {
+    const { getByTestId, rerender } = render(<TestSyncApp number={1} />)
+    expect(getByTestId('display-number')).toHaveTextContent('1')
+    expect(getByTestId('input-number').value).toBe('1')
+
+    rerender(<TestSyncApp number={2} />)
+    expect(getByTestId('display-number')).toHaveTextContent('2')
+    expect(getByTestId('input-number').value).toBe('2')
   })
 })

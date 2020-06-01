@@ -1,6 +1,6 @@
 {
   "name": "@uselife/useform",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "a React Hooks to maintain form state",
   "main": "dist/useForm.min.js",
   "types": "dist/useForm.d.ts",
