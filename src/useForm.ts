@@ -46,7 +46,7 @@ export type UseForm = <S extends object>(
   }
 ]
 
-function getValueFromEvent(e: ChangeEvent<HTMLInputElement>) {
+export function getValueFromEvent(e: ChangeEvent<HTMLInputElement>) {
   if (e && e.target) {
     return (e.target.type || '').toLowerCase() === 'checkbox'
       ? e.target.checked
