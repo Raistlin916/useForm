@@ -30,7 +30,7 @@ type UseFormOpt<S> = {
 
 export type UseField = <S extends object>(
   fieldValue: S,
-  onChange: Dispatch<Partial<S>>,
+  onChange?: Dispatch<Partial<S>>,
   options?: UseFormOpt<S>
 ) => BindField
 
@@ -103,8 +103,22 @@ export const useFieldBase: UseField = (fieldValue, onChange, options = {}) => {
   }
 }
 
-export const useField: UseField = (fieldValue, onChange, options = {}) =>
-  useFieldBase(fieldValue, (v) => onChange({ ...v, ...fieldValue }), options)
+export const useField: UseField = (
+  fieldValue,
+  onChange = () => {},
+  options = {}
+) =>
+  useFieldBase(
+    fieldValue,
+    (v) =>
+      onChange(
+        Object.entries(v).reduce(
+          (pre, cur) => _.set(pre, ...cur),
+          _.clone(fieldValue)
+        )
+      ),
+    options
+  )
 
 type Action<T> =
   | { type: 'set'; payload: Partial<T> }
