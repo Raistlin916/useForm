@@ -55,7 +55,7 @@ export function getValueFromEvent(e: ChangeEvent<HTMLInputElement>) {
   return e
 }
 
-export const useField: UseField = (fieldValue, onChange, options = {}) => {
+export const useFieldBase: UseField = (fieldValue, onChange, options = {}) => {
   const { handleElement, handleOnChanged } = options
   return (elem, bindOpt = {}) => {
     const name = bindOpt.name || elem.props.name
@@ -103,6 +103,9 @@ export const useField: UseField = (fieldValue, onChange, options = {}) => {
   }
 }
 
+export const useField: UseField = (fieldValue, onChange, options = {}) =>
+  useFieldBase(fieldValue, (v) => onChange({ ...v, ...fieldValue }), options)
+
 type Action<T> =
   | { type: 'set'; payload: Partial<T> }
   | { type: 'reset'; payload: T }
@@ -139,7 +142,7 @@ const useForm: UseForm = <T extends {}>(initialState: T, useFormOpt = {}) => {
       payload: data,
     })
 
-  const bindField = useField<T>(formState, setFormState, useFormOpt)
+  const bindField = useFieldBase<T>(formState, setFormState, useFormOpt)
 
   const initialStateSign = JSON.stringify(initialState)
   useEffect(() => {
